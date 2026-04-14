@@ -1,0 +1,7 @@
+inputs:
+  nixpkgs:
+    url: github:cachix/devenv-nixpkgs/rolling
+  nixpkgs-nodejs:
+    url: github:davidnbr/nixpkgs-nodejs
+    overlays:
+      - default

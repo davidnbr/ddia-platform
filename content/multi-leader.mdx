@@ -1,0 +1,26 @@
+# Multi-Leader Replication
+
+Also known as master-master or active/active. More than one node accepts writes.
+
+## Use Cases
+1.  **Multi-Datacenter**: A leader in each datacenter. Tolerates DC outages and gives better local write performance.
+2.  **Offline Clients**: Devices (phones, laptops) act as local leaders.
+3.  **Collaborative Editing**: Google Docs, Etherpad.
+
+## Conflict Avoidance
+The simplest way to deal with conflicts is to **avoid them**. If the application ensures that all writes for a particular record go to the same leader, conflicts cannot occur.
+- *Example*: Route all requests from a user to the same datacenter (the "home" DC) based on their location.
+
+## Convergence
+If conflicts *do* happen, the database must resolve them in a way that all replicas arrive at the same final state (**Convergence**).
+- **Last Write Wins (LWW)**: Uses timestamps. Risky because clocks are unreliable.
+- **Version Vectors**: Used in leaderless systems to track the history of changes across multiple nodes.
+
+<Quiz
+  question="What is the most common strategy for dealing with multi-leader write conflicts?"
+  options={[
+    { id: "a", text: "Conflict Detection and Manual Merge", isCorrect: false, explanation: "This is powerful but complex for users." },
+    { id: "b", text: "Conflict Avoidance (Routing to a specific leader)", isCorrect: true, explanation: "Correct! Most multi-leader setups try to avoid conflicts entirely by pinning data to a specific node." },
+    { id: "c", text: "Locking the entire database", isCorrect: false, explanation: "This would defeat the purpose of having multiple leaders." },
+  ]}
+/>

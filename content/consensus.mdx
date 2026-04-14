@@ -1,0 +1,28 @@
+# Distributed Transactions and Consensus
+
+**Consensus**: Getting several nodes to agree on something.
+
+## The Requirements of Consensus
+1.  **Agreement**: No two nodes decide differently.
+2.  **Integrity**: No node decides twice.
+3.  **Validity**: If a node decides value V, then V was proposed by some node.
+4.  **Termination**: Every node that does not crash eventually decides something. (This is the hard part in an unreliable network).
+
+## Epoch Numbers and Quorums
+In consensus protocols (Paxos, Raft, Zab), we use **Epoch Numbers** (or *viewstamped* numbers) to identify the current leader.
+- If a leader is suspected dead, a new election starts with a higher epoch number.
+- If a node with an old epoch number tries to make a decision, it is ignored.
+- For any decision to be made, the leader must collect votes from a **Quorum** of nodes.
+
+## Total Order Broadcast
+Consensus is essentially about **Ordering**. If you can agree on the order of a log of messages, you have consensus.
+- **Zookeeper** and **etcd** use consensus to maintain a small amount of highly consistent data (configuration, locks, membership).
+
+<Quiz
+  question="What happens if a leader from an old 'Epoch' tries to commit a value?"
+  options={[
+    { id: "a", text: "It is automatically accepted.", isCorrect: false, explanation: "That would cause split-brain." },
+    { id: "b", text: "It is rejected because the quorum has already moved to a higher epoch.", isCorrect: true, explanation: "Correct! Epoch numbers ensure that only the most recently elected leader can make decisions." },
+    { id: "c", text: "The network shuts down.", isCorrect: false, explanation: "The system continues with the new leader." },
+  ]}
+/>

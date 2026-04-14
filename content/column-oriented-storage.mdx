@@ -1,0 +1,25 @@
+# Column-Oriented Storage
+
+Analytic queries often compute aggregates over large datasets. Reading entire rows when you only need one column is wasteful.
+
+## Column Compression
+Storing all values of a column together allows for extreme compression:
+- **Bitmap Encoding**: For low cardinality columns (e.g., "Gender"), store a bit for each value.
+- **Run-Length Encoding**: Compress repetitive sequences.
+
+## Vectorized Processing
+Column stores can use CPU **SIMD** (Single Instruction, Multiple Data) instructions to process chunks of column data in tight loops without function calls.
+
+## Materialized Aggregates
+If the same aggregates (SUM, COUNT) are used frequently, we can cache them:
+- **Materialized Views**: A table-like object containing the actual results of a query, automatically updated when the underlying data changes.
+- **Data Cubes (OLAP Cubes)**: A grid of precomputed aggregates grouped by different dimensions (e.g., product, date, region). Queries become extremely fast because results are pre-calculated.
+
+<Quiz
+  question="Which technique allows a CPU to process many data points in a single clock cycle?"
+  options={[
+    { id: "a", text: "MVCC", isCorrect: false, explanation: "MVCC is for concurrency control." },
+    { id: "b", text: "SIMD / Vectorized Processing", isCorrect: true, explanation: "Correct! Modern CPUs can apply the same instruction to an array of data simultaneously, which column stores exploit for high-performance aggregates." },
+    { id: "c", text: "LSM-Trees", isCorrect: false, explanation: "LSM-Trees are a storage structure, not a CPU instruction technique." },
+  ]}
+/>

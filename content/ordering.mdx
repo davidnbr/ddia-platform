@@ -1,0 +1,14 @@
+# Ordering Guarantees
+
+Ordering is closely related to causality ("happens-before").
+
+## Lamport Timestamps
+A pair `(counter, nodeID)`. Every node tracks the max counter it has seen.
+This provides a **Total Order** consistent with causality.
+*Limitation*: You can order events, but you can't decide "who won" immediately (e.g., uniqueness constraint) without checking all nodes.
+
+## Total Order Broadcast
+To implement a lock service or unique username registry, we need **Total Order Broadcast**:
+1.  Reliable delivery (no messages lost).
+2.  Totally ordered delivery (messages delivered to all nodes in the same order).
+This is equivalent to **Consensus**.

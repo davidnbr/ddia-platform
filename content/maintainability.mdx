@@ -1,0 +1,27 @@
+# Maintainability
+
+The majority of the cost of software is not in its initial development, but in its ongoing maintenance (fixing bugs, keeping systems operational, investigating failures, adapting to new platforms, adding features).
+
+We should design software to minimize pain during maintenance. Three design principles:
+
+## 1. Operability
+**Make it easy for operations teams to keep the system running smoothly.**
+
+Good operations can often work around the limitations of bad software, but good software cannot run reliably with bad operations.
+- Provide visibility into runtime behavior (monitoring).
+- Good support for automation and integration.
+- Avoid dependency on individual machines.
+- Good documentation and default behavior.
+
+## 2. Simplicity
+**Make it easy for new engineers to understand the system.**
+
+This means removing **accidental complexity** (complexity not inherent in the problem but arising from the implementation).
+- The best tool for removing accidental complexity is **abstraction**. A good abstraction hides details behind a clean façade.
+
+## 3. Evolvability
+**Make it easy for engineers to make changes to the system in the future.**
+
+Also known as extensibility, modifiability, or plasticity.
+- Agile working patterns (TDD, refactoring) help.
+- Simple, easy-to-understand systems are easier to modify.

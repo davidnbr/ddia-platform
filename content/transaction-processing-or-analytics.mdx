@@ -1,0 +1,24 @@
+# Transaction Processing or Analytics?
+
+## OLTP vs. OLAP
+- **OLTP (Online Transaction Processing)**: Interactive, millisecond latency, small number of records per query (Disk seek bottleneck).
+- **OLAP (Online Analytical Processing)**: Business intelligence, high volume scans, aggregates (Disk bandwidth bottleneck).
+
+## Schemas for Analytics
+While transaction processing uses diverse models, analytics often uses a formulaic approach:
+
+### Star Schemas (Dimensional Modeling)
+- **Fact Table**: At the center, each row represents an event (e.g., a sale). Usually very wide (100+ columns) and very large (petabytes).
+- **Dimension Tables**: Surround the fact table, representing the "who, what, where, when, how" of the event.
+
+### Snowflake Schemas
+A more normalized version of the star schema where dimensions are further broken down into sub-dimensions (e.g., brand table separate from product table).
+
+<Quiz
+  question="In a data warehouse, which table typically contains the bulk of the data (millions or billions of rows)?"
+  options={[
+    { id: "a", text: "Dimension Table", isCorrect: false, explanation: "Dimension tables are usually smaller and contain descriptive attributes." },
+    { id: "b", text: "Fact Table", isCorrect: true, explanation: "Correct! The fact table stores the individual events or 'facts' and becomes the largest table in the system." },
+    { id: "c", text: "Index Table", isCorrect: false, explanation: "Indexes are secondary structures, not the primary storage for facts." },
+  ]}
+/>

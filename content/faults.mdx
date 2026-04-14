@@ -1,0 +1,9 @@
+# The Trouble with Distributed Systems
+
+In a single computer, if something goes wrong, it usually crashes completely. In a distributed system, we have **Partial Failures**: some parts work, some are broken, and you might not know which is which.
+
+## Cloud Computing vs. Supercomputing
+- **Supercomputing**: Checkpoint state frequently. If *any* node fails, stop the whole cluster and restart from checkpoint. (Reliable hardware).
+- **Cloud Computing**: Service must stay online. Faults are handled in software. (Unreliable commodity hardware).
+
+We must build reliable systems from unreliable components.

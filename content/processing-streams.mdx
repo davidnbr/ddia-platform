@@ -1,0 +1,25 @@
+# Processing Streams
+
+Stream processing happens on data that is never "finished."
+
+## Windows
+Since a stream is infinite, aggregates (like SUM or COUNT) must be done over a slice of time called a **Window**.
+1.  **Tumbling Window**: Fixed length, non-overlapping (e.g., 5-minute blocks).
+2.  **Hopping Window**: Fixed length, but can overlap (e.g., a 5-minute window that moves every 1 minute).
+3.  **Sliding Window**: Contains all events that happened within a certain duration of each other (e.g., "all clicks within 1 hour of a search").
+
+## Handling Late Events: Watermarks
+In an unreliable network, an event that happened at 12:00 might arrive at 12:05.
+- **Event Time**: When the user actually clicked.
+- **Processing Time**: When the stream processor saw it.
+A **Watermark** is a heuristic that tells the processor: "I'm reasonably sure no more events with an Event Time earlier than X will arrive."
+If an event arrives *after* the watermark has passed, it is considered "late" and can be dropped or handled specially.
+
+<Quiz
+  question="Which window type is best for calculating a 5-minute moving average that updates every minute?"
+  options={[
+    { id: "a", text: "Tumbling Window", isCorrect: false, explanation: "Tumbling windows do not overlap." },
+    { id: "b", text: "Hopping Window", isCorrect: true, explanation: "Correct! A hopping window allows you to define a duration (5m) and a step size (1m)." },
+    { id: "c", text: "Session Window", isCorrect: false, explanation: "Session windows are based on periods of activity/inactivity, not fixed time." },
+  ]}
+/>

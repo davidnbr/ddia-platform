@@ -1,0 +1,28 @@
+# Graph-Like Data Models
+
+As connections within your data become more complex, modeling them as a graph becomes more natural.
+
+## Property Graphs (e.g., Neo4j)
+In a property graph:
+1.  **Vertices**: Have a unique ID, set of incoming/outgoing edges, and key-value properties.
+2.  **Edges**: Have a unique ID, head/tail vertices, a label, and properties.
+
+## Triple-Stores and SPARQL
+Information is stored as statements: `(subject, predicate, object)`.
+- `(Jim, likes, bananas)`
+SPARQL is the standard query language for triple-stores.
+
+## Datalog: The Foundation
+Datalog is a much older language (1980s) that provides the foundation for later graph query languages. It defines **rules** that tell the database about new predicates derived from facts.
+- **Fact**: `name(namerica, 'North America').`
+- **Rule**: `within_recursive(X, Y) :- within(X, Y).`
+Datalog is powerful for complex queries because rules can be combined and reused.
+
+<Quiz
+  question="Which graph model uses '(subject, predicate, object)' statements?"
+  options={[
+    { id: "a", text: "Property Graphs", isCorrect: false, explanation: "Property graphs use vertices and edges with key-value properties." },
+    { id: "b", text: "Triple-Stores", isCorrect: true, explanation: "Correct! Triple-stores break all information down into three-part statements." },
+    { id: "c", text: "Relational Tables", isCorrect: false, explanation: "Relational tables use rows and columns." },
+  ]}
+/>

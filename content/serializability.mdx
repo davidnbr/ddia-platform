@@ -1,0 +1,22 @@
+# Serializability
+
+## Serializable Snapshot Isolation (SSI)
+SSI is the first serializable isolation level that scales well. It is **Optimistic**: it assumes things will be fine but checks for trouble at commit time.
+
+### How it works
+The database tracks two things:
+1.  **Detecting reads of stale MVCC versions**: When a transaction commits, it checks if any of the values it read have since been updated.
+2.  **Detecting writes that affect prior reads**: When a transaction writes, it checks if any *other* active transaction has read that row.
+
+If the database finds a potential "Write Skew" cycle, it aborts one of the transactions.
+- **Pros**: No locking! Readers don't block writers. High concurrency.
+- **Cons**: Abort rate can be high if there is heavy contention.
+
+<Quiz
+  question="Which of these is an OPTIMISTIC concurrency control strategy?"
+  options={[
+    { id: "a", text: "Two-Phase Locking (2PL)", isCorrect: false, explanation: "2PL is pessimistic; it blocks others using locks." },
+    { id: "b", text: "Serializable Snapshot Isolation (SSI)", isCorrect: true, explanation: "Correct! SSI lets transactions run and only checks for conflicts when they try to commit." },
+    { id: "c", text: "Single-threaded execution", isCorrect: false, explanation: "This is a structural choice, not a concurrency control strategy per se." },
+  ]}
+/>

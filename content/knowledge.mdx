@@ -1,0 +1,15 @@
+# Knowledge, Truth, and Lies
+
+In a distributed system, a single node cannot trust its own judgment.
+**The Truth is defined by the Majority (Quorum)**.
+
+## Fencing Tokens
+If a node thinks it is the leader, but it was paused, it might try to write to storage.
+To prevent this, use a **Fencing Token** (a monotonically increasing number).
+- The lock server issues token 33.
+- The client writes with token 33.
+- If the storage server has already seen token 34 (from a new leader), it rejects write 33.
+
+## Byzantine Faults
+Nodes might "lie" (send corrupted data). This is the **Byzantine Generals Problem**.
+In trusted datacenters, we usually assume nodes are honest but unreliable (crash-recovery), not Byzantine.

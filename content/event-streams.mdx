@@ -1,0 +1,11 @@
+# Transmitting Event Streams
+
+An **Event** is a small, self-contained, immutable record of something that happened at a point in time.
+**Messaging Systems**:
+- **Direct Messaging**: UDP multicast, ZeroMQ. Fast but can lose data.
+- **Message Brokers**: RabbitMQ, ActiveMQ (AMQP/JMS). Buffer messages in memory/disk. Consumers acknowledge messages.
+- **Log-Based Message Brokers**: **Apache Kafka**.
+  - Append-only log on disk.
+  - Partitioned for scale.
+  - Consumers track their own offset.
+  - High throughput, supports replaying old messages.

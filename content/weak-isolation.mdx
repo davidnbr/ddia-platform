@@ -1,0 +1,27 @@
+# Weak Isolation Levels
+
+## Snapshot Isolation (Repeatable Read)
+Each transaction reads from a consistent snapshot.
+- **MVCC**: Every row has a `created_by` and `deleted_by` transaction ID.
+- A transaction can only see rows where `created_by` is committed AND `deleted_by` is not yet committed.
+
+## Write Skew and Phantoms
+**Write Skew** is a generalization of the lost update problem. It occurs when two transactions read the same objects, but update different objects, in a way that breaks a requirement.
+- *Example*: Two doctors on call. Minimum 1 required. Both see 2 are on call, both go off-call. Now 0 are on call.
+
+### The Phantom Effect
+A **Phantom** is when a write in one transaction changes the result of a search query in another transaction.
+1.  Transaction 1 reads rows matching a condition.
+2.  Transaction 2 inserts/updates a row that *would have* matched that condition.
+3.  Transaction 1 makes a decision based on the now-outdated search result.
+
+**The Solution**: You usually need **Serializability** or **Materializing Conflicts** (creating dummy rows to lock).
+
+<Quiz
+  question="Why can't 'Select for Update' always prevent Write Skew?"
+  options={[
+    { id: "a", text: "Because the rows might not exist yet (Phantoms).", isCorrect: true, explanation: "Correct! If you are checking if a room is free by searching for existing bookings, you can't lock a booking that hasn't been created yet." },
+    { id: "b", text: "Because it only works in Postgres.", isCorrect: false, explanation: "Most SQL databases support it." },
+    { id: "c", text: "Because it only locks the leader.", isCorrect: false, explanation: "Locks are held by the storage engine on whatever node is processing the write." },
+  ]}
+/>

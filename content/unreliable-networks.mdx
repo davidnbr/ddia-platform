@@ -1,0 +1,14 @@
+# Unreliable Networks
+
+The network is the only way nodes communicate. It is **asynchronous** and **unreliable**.
+When you send a request, many things can happen:
+1.  Request lost.
+2.  Request waiting in queue (overload).
+3.  Remote node failed.
+4.  Remote node paused (GC).
+5.  Response lost.
+
+## Timeouts
+The only way to detect a fault is a **Timeout**.
+- *Premature Timeout*: If you timeout too early, you might declare a node dead when it's just slow. This can cause a cascading failure.
+- TCP vs UDP: TCP handles packet reordering and loss, but it can't magically remove delays.

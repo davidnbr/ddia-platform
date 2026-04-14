@@ -1,0 +1,25 @@
+# Query Languages for Data
+
+When the relational model was introduced, it changed how we query data from **imperative** to **declarative**.
+
+## Declarative vs. Imperative
+
+- **Imperative**: You tell the computer *how* to perform a task (step-by-step logic, loops).
+- **Declarative**: You specify the *pattern* of the data you want, but not how to achieve it.
+
+### The CSS Analogy
+Declarative languages are not limited to databases. Consider a web browser:
+- **Declarative (CSS)**: `li.selected > p { background: blue; }`. You describe what should be blue. The browser handles the implementation and updates.
+- **Imperative (JavaScript)**: You would have to loop through all `li` elements, check for the class, find the child `p`, and set the color. If the class changes later, you must manually update it again.
+
+## MapReduce Querying
+MapReduce is a mix: the logic is expressed with snippets of code (`map` and `reduce`), but the framework handles the execution across machines. It is lower-level than SQL but more flexible for certain tasks.
+
+<Quiz
+  question="Why are declarative query languages generally better for parallel execution?"
+  options={[
+    { id: "a", text: "Because they specify the exact algorithm to use.", isCorrect: false, explanation: "That is the opposite of declarative." },
+    { id: "b", text: "Because they specify what to achieve, allowing the engine to pick the best implementation.", isCorrect: true, explanation: "Correct! The database engine is free to run the query in parallel because it isn't tied to a specific step-by-step execution order." },
+    { id: "c", text: "Because they are written in JavaScript.", isCorrect: false, explanation: "Declarative languages like SQL are distinct from imperative ones like JavaScript." },
+  ]}
+/>
