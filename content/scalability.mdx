@@ -1,0 +1,49 @@
+# Scalability
+
+Scalability is the term we use to describe a system's ability to cope with increased load. It is not a one-dimensional label ("X is scalable"). Rather, we must discuss: "If the system grows in a particular way, what are our options for coping with the growth?"
+
+## Describing Load
+
+Load can be described with a few numbers which we call **load parameters**.
+- Requests per second to a web server.
+- Ratio of reads to writes in a database.
+- Number of active users in a chat room.
+- Hit rate on a cache.
+
+### Interactive Simulation: Load vs. Latency
+
+Use the simulator below to understand how increasing traffic (RPS) affects latency, especially as you approach the capacity of your servers. Note how latency spikes when utilization gets high!
+
+<LatencySimulator />
+
+### Example: Twitter
+
+Two main operations:
+1.  **Post tweet**: User publishes a new message (4.6k req/sec avg, 12k peak).
+2.  **Home timeline**: User views tweets from people they follow (300k req/sec).
+
+**Approach 1 (Pull)**: Posting inserts into a global collection. Reading queries the collection joining with followers.
+*   *Problem*: Reading is expensive.
+
+**Approach 2 (Push)**: Maintain a cache for each user's timeline. When a user posts, look up all followers and insert the tweet into their timeline caches.
+*   *Problem*: Write load is huge for celebrities (fan-out).
+
+**Hybrid**: Use Push for most users, Pull for celebrities.
+
+## Describing Performance
+
+- **Throughput**: Records processed per second (batch).
+- **Response Time**: Time between sending a request and receiving a response (online).
+
+### Percentiles
+
+The **mean** (average) is not a good metric because it doesn't tell you how many users experienced a delay.
+**Percentiles** are better:
+- **p50 (Median)**: Half of requests are faster, half are slower.
+- **p95, p99, p999 (Tail Latencies)**: Useful for finding outliers. Amazon uses p999 to ensure the most valuable customers (who have the most data) get good service.
+
+### Coping with Load
+
+- **Scaling Up (Vertical)**: More powerful machine.
+- **Scaling Out (Horizontal)**: Distributing load across multiple smaller machines (shared-nothing).
+- **Elastic**: Automatically adding resources when load increases.

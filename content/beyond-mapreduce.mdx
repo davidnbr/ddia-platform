@@ -1,0 +1,25 @@
+# Beyond MapReduce
+
+MapReduce is often too rigid. Most real-world tasks involve a long chain of jobs.
+
+## Dataflow Engines (Spark, Flink, Tez)
+Instead of forcing every task into a Map and a Reduce, these engines treat the entire workflow as a **DAG (Directed Acyclic Graph)** of operators.
+
+### Advantages over MapReduce:
+- **No unnecessary materialization**: Intermediate results are sent directly to the next operator (often over the network or in memory) rather than being written to HDFS.
+- **Pipelining**: Operators can start processing as soon as their input is ready.
+- **Lazy Evaluation**: The engine sees the whole graph and can optimize it (e.g., combining two filters into one).
+
+## Graph Processing: Pregel
+For algorithms like PageRank, you need to iterate many times.
+The **Pregel** model (Bulk Synchronous Parallel) allows vertices to send messages to each other in "supersteps."
+- *Example*: In each step, every vertex updates its own value based on messages from its neighbors and sends its new value out.
+
+<Quiz
+  question="Why are engines like Spark faster than traditional MapReduce for complex workflows?"
+  options={[
+    { id: "a", text: "They use more disk space.", isCorrect: false, explanation: "They actually use less." },
+    { id: "b", text: "They avoid writing intermediate results to HDFS between every step.", isCorrect: true, explanation: "Correct! Materializing to disk is the biggest bottleneck in MapReduce chains." },
+    { id: "c", text: "They only work with Java.", isCorrect: false, explanation: "They support many languages." },
+  ]}
+/>

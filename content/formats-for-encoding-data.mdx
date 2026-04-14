@@ -1,0 +1,39 @@
+# Formats for Encoding Data
+
+Programs usually work with data in two representations:
+1.  **In-memory**: Objects, structs, lists, arrays, pointers (optimized for CPU access).
+2.  **On-the-wire / On-disk**: Sequence of bytes (optimized for network/storage).
+
+Translating from in-memory to byte-sequence is called **encoding** (serialization). The reverse is **decoding** (deserialization).
+
+## Language-Specific Formats
+Many languages have built-in support (Java `Serializable`, Python `pickle`, Ruby `Marshal`).
+- **Problems**: Security (arbitrary code execution), Versioning (hard to maintain backward compatibility), Efficiency (often verbose). **Avoid them.**
+
+## JSON, XML, and CSV
+Textual formats are human-readable and widely supported.
+- **JSON**: Less verbose than XML, but limited types (no integers vs floats, no binary strings).
+- **XML**: Verbose, complex schema support.
+- **CSV**: No schema, vague handling of special characters.
+
+## Binary Schema-Driven Formats
+For internal communication (microservices), efficiency matters.
+- **Thrift (Facebook)** & **Protocol Buffers (Google)**:
+  - Require a schema definition (`.proto` or `.thrift`).
+  - Use field *tags* (numbers) instead of field names to save space.
+  - Forward/Backward compatibility is handled by not changing field tags.
+
+## Apache Avro
+Avro is different. It doesn't use field tags.
+- **Compactness**: It is the most compact because it stores *no* field names or tags in the data. It just stores values.
+- **Schema Resolution**: It relies on the **Writer's Schema** (used to encode) and the **Reader's Schema** (used to decode). They don't have to be identical, just compatible. The library resolves the differences (e.g., mapping field names, filling default values).
+- **Dynamic**: Excellent for dynamic schemas (e.g., dumping a database to a file) because you don't need to manually assign field IDs.
+
+<Quiz
+  question="Why are language-specific serialization formats (like Python pickle) generally discouraged?"
+  options={[
+    { id: "a", text: "They are too fast and cause network congestion.", isCorrect: false, explanation: "They are often slower." },
+    { id: "b", text: "They are often insecure and tie you to a specific programming language.", isCorrect: true, explanation: "Correct! Deserializing arbitrary objects is a major security risk, and it prevents you from easily reading the data in another language." },
+    { id: "c", text: "They cannot handle floating-point numbers.", isCorrect: false, explanation: "They handle language-native types very well, which is their one advantage." },
+  ]}
+/>

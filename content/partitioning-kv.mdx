@@ -1,0 +1,29 @@
+# Partitioning Key-Value Data
+
+Partitioning (sharding) splits a large dataset into smaller subsets so it can be stored on multiple machines. The main goal is **Scalability**.
+
+## Key-Range Partitioning
+Sort keys and assign ranges to partitions (e.g., A-C, D-F).
+- **Pros**: Efficient range queries (e.g., "all sensors from 12:00 to 13:00").
+- **Cons**: **Hot Spots**. If the key is a timestamp, all writes for "today" go to one partition.
+
+## Hash Partitioning
+Compute a hash of the key (e.g., MD5) and partition based on the hash range.
+- **Pros**: Distributes load evenly, even for sequential keys.
+- **Cons**: Destroys ordering. Range queries become inefficient (must query all partitions).
+- **Compromise**: Cassandra uses a compound key. First part is hashed (for partition), second part is sorted (for range scans within a partition).
+
+## Relieving Hot Spots (Skew)
+Even with hash partitioning, a single key can become a hot spot (e.g., a celebrity user with millions of followers).
+**Solution**: If a key is known to be hot, add a random number to the beginning or end of the key (e.g., `celebrity_id:00` to `celebrity_id:99`).
+- **Write**: The write load is split evenly across 100 different keys/partitions.
+- **Read**: You must query all 100 keys and merge the results. This has read overhead, so only do it for the small number of keys that are actually hot.
+
+<Quiz
+  question="Why is 'Hash Mod N' a bad partitioning strategy?"
+  options={[
+    { id: "a", text: "It is too slow to compute.", isCorrect: false, explanation: "Modulo is very fast." },
+    { id: "b", text: "It causes massive data movement when N (number of nodes) changes.", isCorrect: true, explanation: "Correct! If N changes from 10 to 11, almost all keys will change their assigned node." },
+    { id: "c", text: "It doesn't support string keys.", isCorrect: false, explanation: "You can hash strings to numbers first." },
+  ]}
+/>

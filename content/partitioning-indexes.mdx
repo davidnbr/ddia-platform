@@ -1,0 +1,13 @@
+# Partitioning and Secondary Indexes
+
+Secondary indexes allow searching by something other than the primary key (e.g., search cars by color). They don't partition cleanly.
+
+## Document-Partitioned Indexes (Local)
+Each partition maintains its own secondary index, covering only the documents in that partition.
+- **Write**: Fast. Only update the local partition.
+- **Read**: Slow. **Scatter/Gather**. You must query *all* partitions and merge results.
+
+## Term-Partitioned Indexes (Global)
+A global index covers data from all partitions. The index itself is partitioned (e.g., term "red" is on Node A, "silver" on Node B).
+- **Read**: Fast. You only query the node containing the term "red".
+- **Write**: Slow/Complex. A write to a document might require a distributed transaction to update indexes on different nodes.

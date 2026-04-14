@@ -1,0 +1,22 @@
+# Unbundling Databases
+
+The "Database Inside-Out" philosophy suggests that we should treat a large-scale data system like a single database, but with its components "unbundled" and distributed.
+
+## The Components
+- **The Log (Kafka)**: Acts as the "Commit Log." All writes are ordered here first.
+- **The Processors (Flink/Spark)**: Act as the "Query Engine" or "Materialized View" maintainers. They consume the log and update derived stores.
+- **The Views (Elasticsearch, Redis, Postgres)**: Act as the "Indexes" optimized for specific queries (search, key-value, relational).
+
+## Why Unbundle?
+1.  **Flexibility**: You can use the best tool for each query type.
+2.  **Scalability**: You can scale the ingestion (log), processing, and serving layers independently.
+3.  **Correctness**: By following the order in the log, you can ensure that all derived views stay consistent with each other.
+
+<Quiz
+  question="In the 'Database Inside-Out' model, what takes the place of the traditional database commit log?"
+  options={[
+    { id: "a", text: "A SQL Table", isCorrect: false, explanation: "Tables are derived state, not the log." },
+    { id: "b", text: "A Message Broker like Apache Kafka", isCorrect: true, explanation: "Correct! Kafka provides the total order of events that all other systems follow." },
+    { id: "c", text: "A JSON file on S3", isCorrect: false, explanation: "While persistent, a simple file doesn't easily provide the streaming capabilities needed for unbundling." },
+  ]}
+/>

@@ -1,0 +1,31 @@
+# Relational vs Document Model
+
+The best-known data model today is usually SQL: data is organized into **relations** (called *tables* in SQL), where each relation is an unordered collection of **tuples** (rows).
+
+## The Object-Relational Mismatch
+Most application development today is done in object-oriented programming languages. This leads to an awkward translation layer between the objects in the application code and the database model of tables, rows, and columns. This disconnection is often called the **impedance mismatch**.
+
+## Are Document Databases Repeating History?
+The debate on how to represent relationships is not new. In the 1970s, IBM's **IMS** used a **Hierarchical Model** (tree-structured), which is remarkably similar to the JSON model used by document databases.
+
+### The Great Debate: Network vs. Relational
+Two alternatives emerged to solve the limitations of the hierarchical model:
+1.  **Network Model (CODASYL)**: A generalization of the hierarchical model where a record could have multiple parents. It used "access paths" (like pointers) to navigate data. Querying was imperative and complex.
+2.  **Relational Model**: Proposed by Edgar Codd, it laid data out in the open as relations (tables). The **Query Optimizer** automatically decided the access path, hiding implementation details from the developer.
+
+## Document Databases Today
+Document-oriented databases (like MongoDB, CouchDB) target use cases where data comes in self-contained documents.
+- **Schema flexibility**: Often called "schemaless," but more accurately **schema-on-read** (the structure is interpreted when read), in contrast to **schema-on-write** (traditional relational).
+- **Data locality**: Storing all related data in one document can improve performance by reducing disk seeks, but only if you need the entire document at once.
+
+## Convergence
+The models are converging: Relational databases now support JSON/XML, and Document databases (like RethinkDB) are adding support for joins in their query languages.
+
+<Quiz
+  question="Which historical model required the programmer to manually navigate 'access paths' through the database?"
+  options={[
+    { id: "a", text: "The Relational Model", isCorrect: false, explanation: "No, the relational model uses a query optimizer to automate this." },
+    { id: "b", text: "The Network Model (CODASYL)", isCorrect: true, explanation: "Correct! In the network model, a developer had to move a cursor through the database by following chains of links." },
+    { id: "c", text: "The Hierarchical Model", isCorrect: false, explanation: "The hierarchical model was a simple tree; the 'access path' complexity arose specifically in the network model's many-to-many approach." },
+  ]}
+/>

@@ -1,0 +1,26 @@
+# Data Integration
+
+No single tool does it all. A complex application typically needs to combine several systems.
+
+## Systems of Record vs. Derived Data
+- **System of Record**: The authoritative source of truth (e.g., your primary OLTP database). Data is normalized and durable.
+- **Derived Data**: Data that is transformed or aggregated from the system of record (e.g., Cache, Search Index, Data Warehouse). It can be recreated from the source if lost.
+
+## Evolution of Architectures
+1.  **Lambda Architecture**: Run two parallel systems.
+    - **Batch Layer**: Processes all historical data (accurate but slow).
+    - **Speed Layer**: Processes recent data (fast but approximate).
+    - *Problem*: You have to maintain two codebases (one for batch, one for stream) that do the same thing.
+2.  **Kappa Architecture**: "Stream processing is all you need."
+    - Treat the log of all events as the definitive record.
+    - To reprocess historical data (e.g., to fix a bug or build a new index), simply start a new stream consumer from the beginning of the log.
+    - Requires a log that can be retained indefinitely (like Kafka with long retention or tiered storage).
+
+<Quiz
+  question="What is the main operational disadvantage of the Lambda Architecture?"
+  options={[
+    { id: "a", text: "It cannot handle real-time data.", isCorrect: false, explanation: "The Speed Layer handles real-time data." },
+    { id: "b", text: "Maintaining two separate codebases (batch and stream) logic is complex.", isCorrect: true, explanation: "Correct! Keeping the logic of the batch and speed layers in sync is a major maintenance burden." },
+    { id: "c", text: "It relies on a single leader.", isCorrect: false, explanation: "Lambda is an architectural pattern, not a replication strategy." },
+  ]}
+/>

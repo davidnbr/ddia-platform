@@ -1,0 +1,32 @@
+# Leaders and Followers
+
+Replication means keeping a copy of the same data on multiple machines. The main reasons for this are **High Availability** (tolerating faults), **Latency** (placing data closer to users), and **Scalability** (handling more read load).
+
+The most common way to handle replication is **Leader-Based Replication** (also known as Master-Slave).
+
+## How it works
+1.  One replica is designated the **Leader**. All writes must go to the leader.
+2.  The other replicas are **Followers** (read replicas). Whenever the leader writes new data, it sends the change (replication log) to the followers.
+3.  Followers apply the write in the same order as the leader.
+4.  Reads can be served by the leader or any follower.
+
+## Implementation of Replication Logs
+How do the changes travel from leader to follower?
+- **Statement-based**: Leader logs every write request (e.g., `INSERT...`). *Problem*: Non-deterministic functions like `NOW()` or `RAND()` break replicas.
+- **Write-Ahead Log (WAL) Shipping**: Send the raw disk blocks changed. *Problem*: Very low-level; tied to the storage engine version.
+- **Logical (Row-based) Log**: Send a description of which rows changed (e.g., "Row 5 updated: name='Bob'"). This is the most flexible and allows different versions of the DB to coexist.
+
+## Handling Outages & Failover
+- **Follower Failure**: "Catch-up recovery" using its local log.
+- **Leader Failure (Failover)**: Promoting a follower to leader.
+  - **The Risk of Split Brain**: Two nodes both think they are the leader. They both accept writes, and data diverges. Usually, the old leader is killed (fencing/stoning).
+  - **Data Loss**: If replication was asynchronous, the new leader might be missing the last few writes from the old leader.
+
+<Quiz
+  question="Why is 'Statement-based' replication risky?"
+  options={[
+    { id: "a", text: "It is too slow.", isCorrect: false, explanation: "It is actually quite fast as it sends small SQL strings." },
+    { id: "b", text: "Non-deterministic functions (like NOW()) can cause data to diverge.", isCorrect: true, explanation: "Correct! If the leader and follower execute NOW() at slightly different times, they will store different values." },
+    { id: "c", text: "It requires all nodes to have the same hardware.", isCorrect: false, explanation: "Hardware doesn't matter, but the software logic must be identical." },
+  ]}
+/>

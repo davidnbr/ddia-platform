@@ -1,0 +1,28 @@
+# Problems with Replication Lag
+
+In a "read-scaling" architecture (many followers), you typically use asynchronous replication. This leads to **Eventual Consistency**: if you stop writing, all followers will eventually catch up. But while they are lagging, you can see strange things.
+
+## 1. Reading Your Own Writes
+If you update your profile and immediately reload the page, you might hit a follower that hasn't received the update yet. It looks like your update was lost!
+**Solution**: **Read-After-Write Consistency**.
+- Read from the leader for things the user *just* modified (e.g., their own profile).
+- Track the timestamp of the last update and read from a replica that is at least that up-to-date.
+
+## 2. Monotonic Reads
+If a user reads from a fresh replica, then refreshes and reads from a lagging replica, they might see things "move backward in time" (e.g., a comment disappears).
+**Solution**: **Monotonic Reads**.
+- Ensure a user always reads from the same replica (e.g., hash user ID to replica).
+
+## 3. Consistent Prefix Reads
+In a sharded database, if partitions replicate at different speeds, you might see an answer before the question (causality violation).
+**Solution**: **Consistent Prefix Reads**.
+- Writes that are causally related must be written to the same partition.
+
+<Quiz
+  question="You update your profile photo, refresh the page, and see the old photo. Which consistency guarantee was violated?"
+  options={[
+    { id: "a", text: "Monotonic Reads", isCorrect: false, explanation: "Monotonic reads prevents moving backward in time across multiple reads." },
+    { id: "b", text: "Read-After-Write", isCorrect: true, explanation: "Correct! You should always be able to see your own updates immediately." },
+    { id: "c", text: "Consistent Prefix", isCorrect: false, explanation: "This relates to the ordering of causally related events across partitions." },
+  ]}
+/>

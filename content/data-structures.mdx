@@ -1,0 +1,26 @@
+# Data Structures That Power Your Database
+
+## LSM-Trees (Log-Structured Merge-Trees)
+LSM-Trees turn random writes into sequential writes by using a **MemTable** (in-memory tree) and **SSTables** (Sorted String Tables on disk).
+
+### Performance Optimizations
+1.  **Bloom Filters**: A memory-efficient way to approximate the contents of a set. It saves unnecessary disk reads by telling you if a key *does not* exist in the database.
+2.  **Compaction Strategies**:
+    -   **Size-Tiered**: Newer and smaller SSTables are merged into older and larger ones.
+    -   **Leveled**: The key range is split into smaller SSTables, and older data is moved into separate "levels."
+
+## B-Trees
+The standard index implementation in most relational databases. They break the database into fixed-size **pages** (usually 4KB) and overwrite pages in-place.
+
+### Reliability
+-   **Write-Ahead Log (WAL)**: An append-only file where every B-tree modification is written before it is applied to the pages. This allows recovery after a crash.
+-   **Copy-on-Write**: Instead of overwriting, write a modified page to a new location and update parent pointers.
+
+<Quiz
+  question="What is the primary purpose of a Bloom Filter in an LSM-Tree?"
+  options={[
+    { id: "a", text: "To sort keys in memory.", isCorrect: false, explanation: "That is the MemTable's job." },
+    { id: "b", text: "To avoid unnecessary disk reads for non-existent keys.", isCorrect: true, explanation: "Correct! Bloom filters quickly tell you if a key is definitely not there, saving a costly search through multiple SSTables." },
+    { id: "c", text: "To compress SSTable files.", isCorrect: false, explanation: "Compaction and standard block compression handle that." },
+  ]}
+/>

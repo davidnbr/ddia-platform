@@ -1,0 +1,28 @@
+# Unreliable Clocks
+
+Clocks are not perfect. Quartz crystals drift. NTP synchronization is limited by network latency.
+
+## Clock Confidence Intervals
+Because of drift and network delay, a clock doesn't give you a single point in time, but rather a range.
+- Google's **TrueTime** (used in Spanner) explicitly returns a confidence interval: `[earliest, latest]`.
+- If two intervals overlap, we don't know which event happened first.
+
+## The Solution to Pauses: Fencing Tokens
+Imagine a node is the leader and holds a lease. It pauses for a 10-second GC. The lease expires. A new leader is elected.
+The old node wakes up and thinks it's still leader. It tries to write to the database.
+
+**Fencing** prevents this:
+1.  The lock server assigns a **Fencing Token** (number that increases every time).
+2.  Leader 1 gets token 33.
+3.  Leader 2 (new) gets token 34.
+4.  The storage server only accepts writes if the token is *greater* than any it has seen before.
+5.  When Leader 1 tries to write with 33, the storage server (which saw 34) says "No".
+
+<Quiz
+  question="Why is a Fencing Token necessary when using leases?"
+  options={[
+    { id: "a", text: "To encrypt the data.", isCorrect: false, explanation: "Fencing is for concurrency control, not security." },
+    { id: "b", text: "To detect if a node has been paused and its lease has expired.", isCorrect: true, explanation: "Correct! It ensures that a 'zombie' leader can't overwrite data after it has been replaced." },
+    { id: "c", text: "To speed up the network.", isCorrect: false, explanation: "It adds a small check, not speed." },
+  ]}
+/>

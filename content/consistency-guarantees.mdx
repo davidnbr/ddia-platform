@@ -1,0 +1,22 @@
+# Consistency Guarantees
+
+## Linearizability vs. Serializability
+These two terms are often confused, but they mean different things:
+- **Linearizability**: A recency guarantee on a **single object** (register). It means that once a write completes, all later reads (by wall-clock time) return the new value. It makes the system look like a single variable.
+- **Serializability**: An isolation property of **transactions** (groups of operations). It guarantees that the execution of transactions has the same effect as if they ran serially. It doesn't necessarily guarantee recency (you could be reading from a consistent snapshot of old data).
+
+## CAP Theorem
+**Consistency, Availability, Partition Tolerance**.
+It's actually "Consistent or Available when Partitioned".
+- **Consistency** here means Linearizability.
+- **Availability** means every request gets a non-error response (but it might be stale).
+- **Partition Tolerance** is not a choice; network partitions happen. You must choose between C and A.
+
+<Quiz
+  question="Which consistency model guarantees that if operation A finishes before operation B starts, then B sees the effect of A?"
+  options={[
+    { id: "a", text: "Serializability", isCorrect: false, explanation: "Serializability only guarantees an outcome equivalent to *some* serial order; it doesn't strictly respect real-time ordering." },
+    { id: "b", text: "Linearizability", isCorrect: true, explanation: "Correct! Linearizability (also called atomic consistency) respects the real-time ordering of operations." },
+    { id: "c", text: "Read Committed", isCorrect: false, explanation: "Read committed only prevents dirty reads; it allows non-repeatable reads." },
+  ]}
+/>

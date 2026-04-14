@@ -1,0 +1,12 @@
+# Batch Processing with Unix Tools
+
+Unix pipes are a powerful data processing model.
+`cat access.log | awk '{print $7}' | sort | uniq -c | sort -r -n | head -n 5`
+This pipeline finds the top 5 most popular pages in a log file.
+
+**Philosophy**:
+1.  Make each program do one thing well.
+2.  Expect the output of every program to become the input to another.
+3.  Use text streams as a universal interface.
+
+This is the inspiration for MapReduce.

@@ -1,0 +1,15 @@
+# Rebalancing Partitions
+
+Rebalancing moves load from overloaded nodes to underloaded nodes.
+
+## Strategies
+1.  **Fixed Number of Partitions**: Create many more partitions than nodes (e.g., 1000 partitions for 10 nodes). If you add a node, it steals a few partitions from existing nodes. (Used by Riak, Elasticsearch, Couchbase).
+2.  **Dynamic Partitioning**: Split partitions when they exceed a size (e.g., 10GB). Merge them when they shrink. (Used by HBase, MongoDB).
+3.  **Proportional to Nodes**: Have a fixed number of partitions *per node*. When you add a node, it splits a random existing partition and takes half. (Used by Cassandra).
+
+## Request Routing
+How does the client know which IP address to connect to?
+1.  **Round-Robin**: Ask any node; if it doesn't have the data, it forwards the request.
+2.  **Routing Tier**: A separate load balancer (e.g., Mongos) knows the topology.
+3.  **Client-Aware**: The client library knows the topology (e.g., Riak Java Client).
+**ZooKeeper** is often used to keep track of this cluster metadata.

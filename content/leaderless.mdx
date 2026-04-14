@@ -1,0 +1,27 @@
+# Leaderless Replication
+
+Dynamo-style databases (Riak, Cassandra) abandon the leader concept.
+
+## Quorums
+To guarantee consistency: `W + R > N`.
+- If N=3, W=2, R=2, we have an overlap of at least one node.
+
+### Limitations of Quorums
+Even if `W + R > N`, there are edge cases where you can still get stale data:
+1.  **Concurrent Writes**: If two writes happen at the same time, it's not clear which happened first.
+2.  **Failed Writes**: If a write succeeds on only 1 node (less than W) and returns an error, the write is NOT rolled back. Some nodes now have the new value, while others have the old one.
+3.  **Clock Drift**: If you rely on "Last Write Wins" with timestamps.
+
+## Detection: Version Vectors
+In leaderless systems, we can't use a simple counter because there is no leader. We use a **Version Vector**: a counter for every key, for every replica.
+`{NodeA: 5, NodeB: 2}`.
+This allows the system to distinguish between **Concurrent** writes and those that have a **Causal** relationship.
+
+<Quiz
+  question="If a write fails (it only reaches 1 node instead of W=2), what happens to the data on that 1 node?"
+  options={[
+    { id: "a", text: "It is automatically deleted.", isCorrect: false, explanation: "Leaderless systems typically don't have a rollback mechanism for failed writes." },
+    { id: "b", text: "The node keeps the value, potentially causing stale reads later.", isCorrect: true, explanation: "Correct! This is one of the messy realities of leaderless replication; failed writes leave 'garbage' behind." },
+    { id: "c", text: "The client must manually delete it.", isCorrect: false, explanation: "The client might try, but it's not guaranteed." },
+  ]}
+/>

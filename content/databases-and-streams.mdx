@@ -1,0 +1,10 @@
+# Databases and Streams
+
+**Change Data Capture (CDC)**: Turning a database into a stream.
+We can hook into the database's replication log and stream all changes to other systems (search index, cache, data warehouse). This decouples the systems.
+
+**Event Sourcing**:
+Instead of storing the *current state*, store the *sequence of events* that led to that state.
+- "Student cancelled course" (Event) vs "Delete row from table" (Side effect).
+- Allows reconstructing state at any point in time.
+- Easier to debug and audit.

@@ -1,0 +1,17 @@
+# The Meaning of ACID
+
+Transactions simplify error handling. If a sequence of writes fails halfway, the database rolls it back.
+
+- **Atomicity**: "All or nothing". It's about **abortability**, not concurrency.
+- **Consistency**: The database stays in a "good state" (invariants are met). This is actually a property of the *application*, relying on the database's A, I, and D.
+- **Isolation**: Concurrently executing transactions don't interfere with each other. (Serializable isolation means they appear to run one after another).
+- **Durability**: Once a transaction commits, it stays committed (even if power fails).
+
+<Quiz
+  question="Which letter in ACID describes the ability to abort a transaction on error and discard partial writes?"
+  options={[
+    { id: "a", text: "Atomicity", isCorrect: true, explanation: "Correct! Atomicity ensures operations are grouped as a single unit that either succeeds or fails completely." },
+    { id: "b", text: "Consistency", isCorrect: false, explanation: "Consistency refers to preserving data invariants." },
+    { id: "c", text: "Isolation", isCorrect: false, explanation: "Isolation is about concurrency control." },
+  ]}
+/>

@@ -1,0 +1,10 @@
+# Aiming for Correctness
+
+**End-to-End Argument**: Low-level reliability (TCP, RAID) is not enough. You need end-to-end checks (e.g., application-level checksums, cryptographic signatures).
+
+**Constraint Checking**:
+- Uniqueness constraints usually require consensus (linearizability).
+- But if you accept **apologies** (compensating transactions), you can use faster, looser coordination.
+
+**Ethical Responsibility**:
+We are building systems that affect people's lives. We must consider privacy, bias in algorithms, and the societal impact of our "optimization".

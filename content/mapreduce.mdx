@@ -1,0 +1,27 @@
+# MapReduce and Distributed Filesystems
+
+MapReduce is a "batch" processing model: it takes a fixed set of input and produces a fixed output.
+
+## Join Strategies in MapReduce
+How do you join two large datasets (e.g., Users and Clicks)?
+
+1.  **Reduce-Side Join (Sort-Merge)**:
+    - Mappers extract the join key.
+    - Shuffle sorts and groups by that key.
+    - Reducer gets all records for that key (e.g., the User record and all their Clicks) and merges them.
+2.  **Map-Side Joins**:
+    - **Broadcast Hash Join**: If one table is small (fits in memory), every mapper loads it into a hash map. Fast, no shuffle!
+    - **Partitioned Hash Join**: If both tables are partitioned by the same key, a mapper only needs to load the corresponding partition of the other table.
+
+## Handling Skew (Hot Keys)
+If one key has millions of records (e.g., a "Celebrity" user), a single reducer will be overloaded.
+**Solution**: The "linchpin" strategy. Send the hot key records to a random set of reducers, and replicate the other side of the join to all those reducers.
+
+<Quiz
+  question="Which join strategy is best if one of the tables fits entirely in memory?"
+  options={[
+    { id: "a", text: "Sort-Merge Join", isCorrect: false, explanation: "This is reliable but slower due to the shuffle." },
+    { id: "b", text: "Broadcast Hash Join", isCorrect: true, explanation: "Correct! By loading the small table into memory on every mapper, you avoid the expensive sorting and shuffling of the large table." },
+    { id: "c", text: "Remote Lookup Join", isCorrect: false, explanation: "Querying an external DB from a mapper is usually too slow." },
+  ]}
+/>

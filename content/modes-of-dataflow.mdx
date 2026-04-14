@@ -1,0 +1,27 @@
+# Modes of Dataflow
+
+Data flows between processes whenever you send data to a database, call an API, or send a message. Compatibility is key.
+
+## 1. Dataflow Through Databases
+The process writing to the database encodes the data; the process reading it decodes it.
+- **Backward Compatibility**: A newer version of the app reads data written by an older version.
+- **Forward Compatibility**: An older version of the app reads data written by a newer version (it should ignore new fields).
+- **Pitfall**: If an older app reads a record, updates it, and writes it back, it might accidentally delete the new fields it didn't know about.
+
+## 2. Dataflow Through Services (REST/RPC)
+Processes communicate over a network.
+- **REST**: Resource-oriented, uses HTTP features (URLs, verbs, headers). Evolution is usually managed by versioning the API URL (`/v1/user`).
+- **RPC (Remote Procedure Call)**: Tries to make a remote network request look like a local function call (gRPC, Dubbo).
+  - *Problem*: Network calls are unpredictable (timeouts, failures), unlike local calls.
+
+## 3. Message-Passing Dataflow
+Asynchronous message brokers (Kafka, RabbitMQ, ActiveMQ).
+- **Decoupling**: The sender doesn't need to know who (or if anyone) is listening.
+- **Buffering**: The broker can buffer messages if the consumer is overloaded.
+- **Reliability**: Messages can be redelivered on crash.
+- **One-way**: Usually sender doesn't wait for a reply (fire and forget).
+
+### Distributed Actor Frameworks
+(e.g., Akka, Erlang OTP)
+- Integrates message passing directly into the programming model.
+- Each actor has its own state and communicates only via messages.
